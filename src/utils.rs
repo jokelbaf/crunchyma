@@ -6,6 +6,5 @@ pub fn is_today(date: &DateTime<Utc>) -> bool {
 }
 
 pub fn is_in_past(date: &DateTime<Utc>) -> bool {
-    let now = Utc::now();
-    date.date_naive() < now.date_naive()
+    Utc::now() > *date
 }
