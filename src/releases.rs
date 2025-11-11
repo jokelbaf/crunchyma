@@ -59,6 +59,8 @@ pub async fn create_client() -> Result<Crunchyroll, ReleaseError> {
     let password = std::env::var("CRUNCHYROLL_PASSWORD")
         .map_err(|_| ReleaseError::MissingEnvVar("CRUNCHYROLL_PASSWORD".into()))?;
 
+    let uuid = std::env::var("DEVICE_UUID").unwrap_or_else(|_| Uuid::new_v4().to_string());
+
     let mut default_headers: HeaderMap = CrunchyrollBuilder::DEFAULT_HEADERS
         .iter()
         .cloned()
@@ -74,7 +76,7 @@ pub async fn create_client() -> Result<Crunchyroll, ReleaseError> {
         .build()?;
 
     let device = DeviceIdentifier {
-        device_id: Uuid::new_v4().to_string(),
+        device_id: uuid,
         device_type: "iPhone 15".to_string(),
         device_name: Some("iPhone 15".to_string()),
     };

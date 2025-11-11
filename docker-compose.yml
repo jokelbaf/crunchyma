@@ -21,6 +21,7 @@ services:
       dockerfile: Dockerfile
     container_name: crunchyma-bot
     environment:
+      DEVICE_UUID: "0000-0000-0000-0000-0000"
       TELOXIDE_TOKEN: "123456789:ABCDefGhIjKlMnOpQrStUvWxYz"
       DATABASE_URL: "postgresql://user:password@postgres:5432/database"
       RUST_LOG: "info,sqlx::query=warn,sea_orm=info"
