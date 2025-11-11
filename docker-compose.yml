@@ -23,7 +23,7 @@ services:
     environment:
       TELOXIDE_TOKEN: "123456789:ABCDefGhIjKlMnOpQrStUvWxYz"
       DATABASE_URL: "postgresql://user:password@postgres:5432/database"
-      RUST_LOG: "info"
+      RUST_LOG: "info,sqlx::query=warn,sea_orm=info"
       OWNER_ID: "123"
       CRUNCHYROLL_EMAIL: ""
       CRUNCHYROLL_PASSWORD: ""
