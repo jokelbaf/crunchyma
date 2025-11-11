@@ -1,0 +1,16 @@
+name: Create Release
+on:
+  push:
+    branches: [master]
+    paths:
+      - 'Cargo.toml'
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+
+      - uses: jokelbaf/rust-release@master

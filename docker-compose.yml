@@ -1,0 +1,37 @@
+services:
+  postgres:
+    image: postgres:18-alpine
+    container_name: crunchyma-db
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: database
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U user -d database"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+  bot:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: crunchyma-bot
+    environment:
+      TELOXIDE_TOKEN: "123456789:ABCDefGhIjKlMnOpQrStUvWxYz"
+      DATABASE_URL: "postgresql://user:password@postgres:5432/database"
+      RUST_LOG: "info"
+      OWNER_ID: "123"
+      CRUNCHYROLL_EMAIL: ""
+      CRUNCHYROLL_PASSWORD: ""
+      CHANNEL_ID: "-123"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
