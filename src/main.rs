@@ -60,6 +60,8 @@ async fn background_task(bot: DefaultParseMode<Bot>, db: Arc<DatabaseConnection>
 
         if let Err(err) = check_releases(bot.clone(), db.clone(), crunchyroll.clone()).await {
             log::error!("Failed to check releases: {}", err);
+        } else {
+            log::info!("Release check completed successfully.");
         }
     }
 }

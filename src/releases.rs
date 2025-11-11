@@ -170,6 +170,7 @@ pub async fn check_releases(
         }
     }
 
+    log::info!("Found {} new episodes", episodes.len());
     episodes.sort_by_key(|e| e.availability_starts);
 
     for episode in episodes {
