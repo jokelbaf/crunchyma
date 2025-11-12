@@ -158,8 +158,8 @@ pub async fn check_releases(
             let item = item?;
             if let SearchMediaCollection::Episode(episode) = item
                 && !episode.is_clip
-                && episode.availability_status == "available"
-                && is_today(&episode.availability_starts)
+                && (is_today(&episode.free_available_date)
+                    || is_today(&episode.premium_available_date))
             {
                 let db_episode = get_episode(&db, &episode.id).await?;
                 if db_episode.is_none() {
@@ -175,7 +175,8 @@ pub async fn check_releases(
     episodes.sort_by_key(|e| e.availability_starts);
 
     for episode in episodes {
-        if !is_in_past(&episode.availability_starts) {
+        if !is_in_past(&episode.free_available_date) && !is_in_past(&episode.premium_available_date)
+        {
             // Only post episodes that are actually available
             continue;
         }
