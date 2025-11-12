@@ -25,7 +25,7 @@ pub fn format_number(n: u32) -> String {
     format!("{}{}", f, s)
 }
 
-pub fn parse_categories(categories: &Vec<Category>) -> String {
+pub fn parse_categories(categories: &[Category]) -> String {
     categories
         .iter()
         .map(|category| {
