@@ -2,13 +2,9 @@ use std::collections::HashMap;
 use std::sync::Arc;
 
 use crunchyroll_rs::{
-    Crunchyroll, Locale,
-    common::StreamExt,
-    crunchyroll::CrunchyrollBuilder,
-    crunchyroll::DeviceIdentifier,
-    media::{MediaType, Rating},
-    search::{BrowseOptions, BrowseSortType, SearchEpisode, SearchMediaCollection},
+    Crunchyroll, Locale, common::StreamExt, crunchyroll::{CrunchyrollBuilder, DeviceIdentifier}, media::{MediaType, Rating}, search::{BrowseOptions, BrowseSortType, SearchEpisode, SearchMediaCollection}
 };
+use regex::Regex;
 use reqwest::{
     Url,
     header::{HeaderMap, HeaderValue, USER_AGENT},
@@ -25,7 +21,7 @@ use uuid::Uuid;
 
 use crate::db::{create_episode, get_episode};
 use crate::entity::episodes;
-use crate::utils::{is_in_past, is_today};
+use crate::utils::{is_in_past, is_today, format_number, parse_categories};
 
 const PAGE_SIZE: u32 = 100;
 
@@ -91,9 +87,13 @@ pub async fn create_client() -> Result<Crunchyroll, ReleaseError> {
 }
 
 fn make_keyboard(episode: &SearchEpisode) -> InlineKeyboardMarkup {
-    let url = &format!("https://www.crunchyroll.com/watch/{}", episode.id);
-    let button = InlineKeyboardButton::url("Watch on Crunchyroll", Url::parse(url).unwrap());
-    InlineKeyboardMarkup::new(vec![vec![button]])
+    let series_url = &format!("https://www.crunchyroll.com/series/{}", episode.series_id);
+    let series_button = InlineKeyboardButton::url("View Anime", Url::parse(series_url).unwrap());
+
+    let episode_url = &format!("https://www.crunchyroll.com/watch/{}", episode.id);
+    let episode_button = InlineKeyboardButton::url("Watch Episode", Url::parse(episode_url).unwrap());
+
+    InlineKeyboardMarkup::new(vec![vec![series_button, episode_button]])
 }
 
 fn make_msg_text(
@@ -101,17 +101,11 @@ fn make_msg_text(
     series_rating: &Rating,
     audio_locales: &HashMap<String, String>,
 ) -> String {
-    let genres = episode
-        .categories
-        .iter()
-        .map(|g| format!("#{}", g))
-        .collect::<Vec<_>>()
-        .join(", ");
-
+    let re = Regex::new(r"_+").unwrap();
     let tags = format!(
         "#{} #{}",
-        episode.slug_title.replace("-", "_"),
-        episode.series_slug_title.replace("-", "_"),
+        re.replace_all(&episode.slug_title.replace('-', "_"), "_"),
+        re.replace_all(&episode.series_slug_title.replace('-', "_"), "_"),
     );
 
     let title = match episode.audio_locale {
@@ -126,13 +120,13 @@ fn make_msg_text(
     format!(
         "<b>{}</b>\n\n<b>Genres:</b> {}\n\n<blockquote><b>About:</b>\n{}\n\nSeason: <b>{}</b>\nEpisode: <b>{}</b>\nDuration: <b>{} mins</b>\nSeries rating: <b>{}★ ({})</b>\nAge restrictions: <b>{}</b></blockquote>\n\n{}",
         title,
-        genres,
+        parse_categories(&episode.categories),
         episode.description,
         episode.season_number,
         episode.episode_number.unwrap_or(0),
         episode.duration.num_minutes(),
         series_rating.average,
-        series_rating.total,
+        format_number(series_rating.total),
         episode.maturity_ratings.join(", "),
         tags,
     )

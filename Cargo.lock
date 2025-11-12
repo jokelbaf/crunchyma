@@ -416,6 +416,7 @@ dependencies = [
  "dotenvy",
  "log",
  "pretty_env_logger",
+ "regex",
  "reqwest",
  "sea-orm",
  "teloxide",
