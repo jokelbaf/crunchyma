@@ -54,7 +54,7 @@ async fn background_task(bot: DefaultParseMode<Bot>, db: Arc<DatabaseConnection>
             Ok(client) => client,
             Err(err) => {
                 log::error!("Failed to create Crunchyroll client: {}", err);
-                return;
+                continue;
             }
         };
 
