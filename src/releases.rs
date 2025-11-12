@@ -2,7 +2,11 @@ use std::collections::HashMap;
 use std::sync::Arc;
 
 use crunchyroll_rs::{
-    Crunchyroll, Locale, common::StreamExt, crunchyroll::{CrunchyrollBuilder, DeviceIdentifier}, media::{MediaType, Rating}, search::{BrowseOptions, BrowseSortType, SearchEpisode, SearchMediaCollection}
+    Crunchyroll, Locale,
+    common::StreamExt,
+    crunchyroll::{CrunchyrollBuilder, DeviceIdentifier},
+    media::{MediaType, Rating},
+    search::{BrowseOptions, BrowseSortType, SearchEpisode, SearchMediaCollection},
 };
 use regex::Regex;
 use reqwest::{
@@ -21,7 +25,7 @@ use uuid::Uuid;
 
 use crate::db::{create_episode, get_episode};
 use crate::entity::episodes;
-use crate::utils::{is_in_past, is_today, format_number, parse_categories};
+use crate::utils::{format_number, is_in_past, is_today, parse_categories};
 
 const PAGE_SIZE: u32 = 100;
 
@@ -91,7 +95,8 @@ fn make_keyboard(episode: &SearchEpisode) -> InlineKeyboardMarkup {
     let series_button = InlineKeyboardButton::url("View Anime", Url::parse(series_url).unwrap());
 
     let episode_url = &format!("https://www.crunchyroll.com/watch/{}", episode.id);
-    let episode_button = InlineKeyboardButton::url("Watch Episode", Url::parse(episode_url).unwrap());
+    let episode_button =
+        InlineKeyboardButton::url("Watch Episode", Url::parse(episode_url).unwrap());
 
     InlineKeyboardMarkup::new(vec![vec![series_button, episode_button]])
 }

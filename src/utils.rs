@@ -19,20 +19,25 @@ pub fn format_number(n: u32) -> String {
     };
 
     let mut f = format!("{:.1}", v);
-    if f.ends_with(".0") { f.truncate(f.len() - 2); }
+    if f.ends_with(".0") {
+        f.truncate(f.len() - 2);
+    }
     format!("{}{}", f, s)
 }
 
 pub fn parse_categories(categories: &Vec<Category>) -> String {
-    categories.iter()
-        .map(|category| format!(
-            "#{}",
-            category
-                .to_string()
-                .to_lowercase()
-                .replace(" ", "_")
-                .replace("-", "_")
-        ))
+    categories
+        .iter()
+        .map(|category| {
+            format!(
+                "#{}",
+                category
+                    .to_string()
+                    .to_lowercase()
+                    .replace(" ", "_")
+                    .replace("-", "_")
+            )
+        })
         .collect::<Vec<_>>()
         .join(", ")
 }
