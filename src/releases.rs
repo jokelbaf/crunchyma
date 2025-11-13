@@ -172,7 +172,12 @@ pub async fn check_releases(
     }
 
     log::info!("Found {} new episodes", episodes.len());
-    episodes.sort_by_key(|e| e.availability_starts);
+
+    episodes.sort_by_key(|e| {
+        is_today(&e.free_available_date)
+            .then(|| e.free_available_date)
+            .unwrap_or(e.premium_available_date)
+    });
 
     for episode in episodes {
         if !is_in_past(&episode.free_available_date) && !is_in_past(&episode.premium_available_date)
