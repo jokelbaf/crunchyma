@@ -44,19 +44,18 @@ async fn main() {
 }
 
 async fn background_task(bot: DefaultParseMode<Bot>, db: Arc<DatabaseConnection>) {
+    let crunchyroll = match create_client().await {
+        Ok(client) => client,
+        Err(err) => {
+            log::error!("Failed to create Crunchyroll client: {}", err);
+            return;
+        }
+    };
     let mut interval = interval(Duration::from_secs(60));
 
     loop {
         interval.tick().await;
         log::info!("Checking for new releases...");
-
-        let crunchyroll = match create_client().await {
-            Ok(client) => client,
-            Err(err) => {
-                log::error!("Failed to create Crunchyroll client: {}", err);
-                continue;
-            }
-        };
 
         if let Err(err) = check_releases(bot.clone(), db.clone(), crunchyroll.clone()).await {
             log::error!("Failed to check releases: {}", err);
