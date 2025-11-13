@@ -215,7 +215,6 @@ pub async fn check_releases(
             series_title: Set(episode.series_title.clone()),
             series_id: Set(episode.series_id.clone()),
             season_id: Set(episode.season_id.clone()),
-            is_new: Set(episode.is_new.unwrap_or(false)),
             number: Set(episode.episode_number.unwrap_or(0) as i64),
             season_number: Set(episode.season_number as i64),
             audio_locale: Set(episode.audio_locale.to_string()),

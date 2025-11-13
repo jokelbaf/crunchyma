@@ -17,7 +17,6 @@ pub struct Model {
     pub series_id: String,
     #[sea_orm(column_type = "Text")]
     pub season_id: String,
-    pub is_new: bool,
     pub number: i64,
     pub season_number: i64,
     #[sea_orm(column_type = "Text")]
