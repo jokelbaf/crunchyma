@@ -122,10 +122,15 @@ fn make_msg_text(
         }
     };
 
+    let genres = {
+        let g = parse_categories(&episode.categories);
+        if g.is_empty() { "-".to_string() } else { g }
+    };
+
     format!(
         "<b>{}</b>\n\n<b>Genres:</b> {}\n\n<blockquote><b>About:</b>\n{}\n\nSeason: <b>{}</b>\nEpisode: <b>{}</b>\nDuration: <b>{} mins</b>\nSeries rating: <b>{}★ ({})</b>\nAge restrictions: <b>{}</b></blockquote>\n\n{}",
         title,
-        parse_categories(&episode.categories),
+        genres,
         episode.description,
         episode.season_number,
         episode.episode_number.unwrap_or(0),
