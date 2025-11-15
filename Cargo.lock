@@ -422,6 +422,7 @@ dependencies = [
  "teloxide",
  "thiserror",
  "tokio",
+ "url",
  "uuid",
 ]
 

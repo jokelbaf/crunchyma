@@ -5,7 +5,7 @@ use crunchyroll_rs::{
     Crunchyroll, Locale,
     common::StreamExt,
     crunchyroll::{CrunchyrollBuilder, DeviceIdentifier},
-    media::{MediaType, Rating},
+    media::{MediaType, Rating, Series},
     search::{BrowseOptions, BrowseSortType, SearchEpisode, SearchMediaCollection},
 };
 use regex::Regex;
@@ -50,6 +50,8 @@ pub enum ReleaseError {
     RequestError(#[from] RequestError),
     #[error("Reqwest error: {0}")]
     ReqwestError(#[from] reqwest::Error),
+    #[error("URL parse error: {0}")]
+    UrlParseError(#[from] url::ParseError),
 }
 
 pub async fn create_client() -> Result<Crunchyroll, ReleaseError> {
@@ -205,19 +207,11 @@ pub async fn check_releases(
             .parse::<i64>()
             .map_err(|_| ReleaseError::InvalidEnvVar("CHANNEL_ID".into()))?;
 
-        let photo_source = series
-            .images
-            .poster_tall
-            .iter()
-            .max_by_key(|img| img.width * img.height)
-            .map(|img| img.source.as_str())
-            .unwrap_or(FALLBACK_POSTER_IMAGE);
+        let poster_image = fetch_series_poster(series).await?;
 
-        let photo_url = reqwest::Url::parse(photo_source).unwrap();
-
-        bot.send_photo(ChatId(channel_id), InputFile::url(photo_url))
+        bot.send_photo(ChatId(channel_id), poster_image)
             .reply_markup(keyboard)
-            .caption(msg_text)
+            .caption(msg_text.clone())
             .await?;
 
         let db_episode = episodes::ActiveModel {
@@ -238,11 +232,32 @@ pub async fn check_releases(
     Ok(())
 }
 
-pub async fn fetch_audio_locales() -> Result<HashMap<String, String>, ReleaseError> {
+async fn fetch_audio_locales() -> Result<HashMap<String, String>, ReleaseError> {
     let client = reqwest::Client::new();
     let response = client.get(AUDIO_LOCALES_URL).send().await?;
 
     let locales: HashMap<String, String> = response.json().await?;
 
     Ok(locales)
+}
+
+async fn fetch_series_poster(series: Series) -> Result<InputFile, ReleaseError> {
+    let photo_source = series
+        .images
+        .poster_tall
+        .iter()
+        .max_by_key(|img| img.width * img.height)
+        .map(|img| img.source.as_str())
+        .unwrap_or(FALLBACK_POSTER_IMAGE);
+
+    let photo_url = reqwest::Url::parse(photo_source)?;
+    let photo_filename = photo_url
+        .path_segments()
+        .and_then(|mut segments| segments.next_back())
+        .unwrap_or("image.png")
+        .to_string();
+
+    let bytes = reqwest::get(photo_url.clone()).await?.bytes().await?;
+
+    Ok(InputFile::memory(bytes).file_name(photo_filename))
 }
