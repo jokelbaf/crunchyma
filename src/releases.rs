@@ -130,7 +130,7 @@ fn make_msg_text(
     let categories = episode.categories.as_ref().unwrap();
 
     let genres = {
-        let g = parse_categories(&categories);
+        let g = parse_categories(categories);
         if g.is_empty() { "-".to_string() } else { g }
     };
 
