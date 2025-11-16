@@ -5,8 +5,10 @@ use crunchyroll_rs::{
     Crunchyroll, Locale,
     common::StreamExt,
     crunchyroll::{CrunchyrollBuilder, DeviceIdentifier},
-    media::{MediaType, Rating, Series},
-    search::{BrowseOptions, BrowseSortType, SearchEpisode, SearchMediaCollection},
+    media::{Rating, Series},
+    search::{
+        BrowseMediaType, BrowseOptions, BrowseSortType, SearchEpisode, SearchMediaCollection,
+    },
 };
 use regex::Regex;
 use reqwest::{
@@ -124,8 +126,11 @@ fn make_msg_text(
         }
     };
 
+    // `categories` is guaranteed to be `Some` here
+    let categories = episode.categories.as_ref().unwrap();
+
     let genres = {
-        let g = parse_categories(&episode.categories);
+        let g = parse_categories(&categories);
         if g.is_empty() { "-".to_string() } else { g }
     };
 
@@ -153,7 +158,7 @@ pub async fn check_releases(
 
     let options = BrowseOptions::default()
         .sort(BrowseSortType::NewlyAdded)
-        .media_type(MediaType::Custom("episode".to_string()));
+        .media_type(BrowseMediaType::Episode);
 
     let mut browse = crunchyroll.browse(options);
     browse.page_size(PAGE_SIZE);

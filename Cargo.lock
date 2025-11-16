@@ -428,8 +428,8 @@ dependencies = [
 
 [[package]]
 name = "crunchyroll-rs"
-version = "0.15.0"
-source = "git+https://github.com/jokelbaf/crunchyroll-rs.git#f09236a23c948bc1d88570cadc52372fec5e9d26"
+version = "0.15.1"
+source = "git+https://github.com/crunchy-labs/crunchyroll-rs.git#d9f6799eeed3ec3e56fb1d8ef242fd9e29beb8c3"
 dependencies = [
  "chrono",
  "crunchyroll-rs-internal",
@@ -450,8 +450,8 @@ dependencies = [
 
 [[package]]
 name = "crunchyroll-rs-internal"
-version = "0.15.0"
-source = "git+https://github.com/jokelbaf/crunchyroll-rs.git#f09236a23c948bc1d88570cadc52372fec5e9d26"
+version = "0.15.1"
+source = "git+https://github.com/crunchy-labs/crunchyroll-rs.git#d9f6799eeed3ec3e56fb1d8ef242fd9e29beb8c3"
 dependencies = [
  "darling",
  "quote",
@@ -544,9 +544,9 @@ dependencies = [
 
 [[package]]
 name = "dash-mpd"
-version = "0.18.4"
+version = "0.19.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "a8566944d3b3287a865a0ea8590b07b437142ca3640fed806c15e18a4087ea42"
+checksum = "39f1fa59bfea9a65536acf3d507def510e893c4ce09c893948dcce5904757593"
 dependencies = [
  "base64",
  "base64-serde",
@@ -2161,9 +2161,9 @@ dependencies = [
 
 [[package]]
 name = "quick-xml"
-version = "0.37.5"
+version = "0.38.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "331e97a1af0bf59823e6eadffe373d7b27f485be8748f71471c662c1f269b7fb"
+checksum = "b66c2058c55a409d601666cffe35f04333cf1013010882cec174a7467cd4e21c"
 dependencies = [
  "memchr",
  "serde",
