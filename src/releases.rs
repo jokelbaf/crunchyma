@@ -127,7 +127,7 @@ fn make_msg_text(
     };
 
     // `categories` is guaranteed to be `Some` here
-    let categories = episode.categories.as_ref().unwrap();
+    let categories = episode.categories.as_deref().unwrap_or(&[]);
 
     let genres = {
         let g = parse_categories(categories);
