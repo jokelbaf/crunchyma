@@ -3,13 +3,13 @@ services:
     image: postgres:18-alpine
     container_name: crunchyma-db
     environment:
-      POSTGRES_USER: user
-      POSTGRES_PASSWORD: password
-      POSTGRES_DB: database
+      POSTGRES_USER: ${POSTGRES_USER:-user}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-password}
+      POSTGRES_DB: ${POSTGRES_DB:-database}
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U user -d database"]
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -21,14 +21,14 @@ services:
       dockerfile: Dockerfile
     container_name: crunchyma-bot
     environment:
-      DEVICE_UUID: "0000-0000-0000-0000-0000"
-      TELOXIDE_TOKEN: "123456789:ABCDefGhIjKlMnOpQrStUvWxYz"
-      DATABASE_URL: "postgresql://user:password@postgres:5432/database"
-      RUST_LOG: "info,sqlx::query=warn,sea_orm=info"
-      OWNER_ID: "123"
-      CRUNCHYROLL_EMAIL: ""
-      CRUNCHYROLL_PASSWORD: ""
-      CHANNEL_ID: "-123"
+      DEVICE_UUID: ${DEVICE_UUID}
+      TELOXIDE_TOKEN: ${TELOXIDE_TOKEN}
+      DATABASE_URL: ${DATABASE_URL}
+      RUST_LOG: ${RUST_LOG:-info,sqlx::query=warn,sea_orm=info}
+      OWNER_ID: ${OWNER_ID}
+      CRUNCHYROLL_EMAIL: ${CRUNCHYROLL_EMAIL}
+      CRUNCHYROLL_PASSWORD: ${CRUNCHYROLL_PASSWORD}
+      CHANNEL_ID: ${CHANNEL_ID}
     depends_on:
       postgres:
         condition: service_healthy
