@@ -4,7 +4,10 @@ use std::time::Duration;
 use dotenvy::dotenv;
 use sea_orm::DatabaseConnection;
 use teloxide::{
-    adaptors::DefaultParseMode, prelude::*, types::ParseMode, utils::command::BotCommands,
+    adaptors::DefaultParseMode,
+    prelude::*,
+    types::{ChatId, ParseMode},
+    utils::{command::BotCommands, html::escape},
 };
 use tokio::time::interval;
 
@@ -30,10 +33,18 @@ async fn main() {
 
     let bot = Bot::from_env().parse_mode(ParseMode::Html);
 
+    let owner_id = std::env::var("OWNER_ID")
+        .ok()
+        .and_then(|id| id.parse::<i64>().ok());
+
+    if owner_id.is_none() {
+        log::warn!("OWNER_ID is missing or invalid. Failure DM notifications are disabled.");
+    }
+
     let background_bot = bot.clone();
     let background_db = db.clone();
     tokio::spawn(async move {
-        background_task(background_bot, background_db).await;
+        background_task(background_bot, background_db, owner_id).await;
     });
 
     Command::repl(bot, move |bot, msg, cmd| {
@@ -43,7 +54,11 @@ async fn main() {
     .await;
 }
 
-async fn background_task(bot: DefaultParseMode<Bot>, db: Arc<DatabaseConnection>) {
+async fn background_task(
+    bot: DefaultParseMode<Bot>,
+    db: Arc<DatabaseConnection>,
+    owner_id: Option<i64>,
+) {
     let crunchyroll = match create_client().await {
         Ok(client) => client,
         Err(err) => {
@@ -59,6 +74,17 @@ async fn background_task(bot: DefaultParseMode<Bot>, db: Arc<DatabaseConnection>
 
         if let Err(err) = check_releases(bot.clone(), db.clone(), crunchyroll.clone()).await {
             log::error!("Failed to check releases: {}", err);
+
+            if let Some(owner_id) = owner_id {
+                let message = format!(
+                    "<b>Failed to check releases</b>\n<code>{}</code>",
+                    escape(&err.to_string())
+                );
+
+                if let Err(notify_err) = bot.send_message(ChatId(owner_id), message).await {
+                    log::error!("Failed to notify about release check error: {}", notify_err);
+                }
+            }
         } else {
             log::info!("Release check completed successfully.");
         }
