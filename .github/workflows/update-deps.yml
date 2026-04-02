@@ -1,0 +1,26 @@
+name: Update Dependencies
+
+on:
+  schedule:
+    - cron: '0 */6 * * *'
+  workflow_dispatch:
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Update dependencies
+        run: cargo update -p crunchyroll-rs
+
+      - name: Commit and push if needed
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          if ! git diff --quiet Cargo.lock; then
+            git add Cargo.lock
+            git commit -m "chore(deps): Update crunchyroll-rs to the latest version"
+            git push
+          fi
