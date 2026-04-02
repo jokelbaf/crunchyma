@@ -27,8 +27,18 @@ cargo run
 
 The bot can be deployed using Docker. A `Dockerfile` and `docker-compose.yml` are provided for easy deployment:
 
+1. Create your environment file from [.env.example](.env.example):
+
 ```bash
-docker-compose up -d
+cp .env.example .env
+```
+
+2. Update `.env` values for your environment (token, owner/channel IDs, Crunchyroll credentials, database settings, etc.).
+
+3. Deploy with Compose using your env file:
+
+```bash
+docker compose --env-file .env up -d
 ```
 
 ## Acknowledgements
