@@ -12,13 +12,31 @@ jobs:
     steps:
       - uses: actions/checkout@v6
 
+      - name: Get current crunchyroll-rs revision
+        id: old_rev
+        run: |
+          OLD_REV=$(grep 'crunchyroll-rs' Cargo.lock | grep source | head -1)
+          echo "old_rev=$OLD_REV" >> $GITHUB_OUTPUT
+
       - name: Update dependencies
         run: cargo update -p crunchyroll-rs
+
+      - name: Get new crunchyroll-rs revision
+        id: new_rev
+        run: |
+          NEW_REV=$(grep 'crunchyroll-rs' Cargo.lock | grep source | head -1)
+          echo "new_rev=$NEW_REV" >> $GITHUB_OUTPUT
 
       - name: Commit and push if needed
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          if [ "${{ steps.old_rev.outputs.old_rev }}" = "${{ steps.new_rev.outputs.new_rev }}" ]; then
+            echo "No upstream changes for crunchyroll-rs. Nothing to commit."
+            exit 0
+          fi
+
           if ! git diff --quiet Cargo.lock; then
             git add Cargo.lock
             git commit -m "chore(deps): Update crunchyroll-rs to the latest version"
