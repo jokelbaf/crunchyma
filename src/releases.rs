@@ -65,7 +65,7 @@ pub async fn create_client() -> Result<Crunchyroll, ReleaseError> {
 
     let uuid = std::env::var("DEVICE_UUID").unwrap_or_else(|_| Uuid::new_v4().to_string());
 
-    let mut default_headers: HeaderMap = CrunchyrollBuilder::DEFAULT_HEADERS
+    let mut default_headers: HeaderMap = CrunchyrollBuilder::ANDROID_TV_DEFAULT_HEADERS
         .iter()
         .cloned()
         .collect();
