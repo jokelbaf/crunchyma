@@ -350,7 +350,7 @@ version = "3.0.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "fde0e0ec90c9dfb3b4b1a0891a7dcd0e2bffde2f7efed5fe7c9bb00e5bfb915e"
 dependencies = [
- "windows-sys 0.48.0",
+ "windows-sys 0.59.0",
 ]
 
 [[package]]
@@ -493,8 +493,8 @@ dependencies = [
 
 [[package]]
 name = "crunchyroll-rs"
-version = "0.18.2"
-source = "git+https://github.com/crunchy-labs/crunchyroll-rs.git#09b3f1a2034448e7ac46db438ae1e2d55b058e29"
+version = "0.18.3"
+source = "git+https://github.com/crunchy-labs/crunchyroll-rs.git#efbd4d1317d3137702f4618af1d6b47656311fda"
 dependencies = [
  "byteorder",
  "chrono",
@@ -517,8 +517,8 @@ dependencies = [
 
 [[package]]
 name = "crunchyroll-rs-internal"
-version = "0.18.2"
-source = "git+https://github.com/crunchy-labs/crunchyroll-rs.git#09b3f1a2034448e7ac46db438ae1e2d55b058e29"
+version = "0.18.3"
+source = "git+https://github.com/crunchy-labs/crunchyroll-rs.git#efbd4d1317d3137702f4618af1d6b47656311fda"
 dependencies = [
  "darling 0.24.0",
  "proc-macro2",
@@ -4090,9 +4090,9 @@ checksum = "b6c140620e7ffbb22c2dee59cafe6084a59b5ffc27a8859a5f0d494b5d52b6be"
 
 [[package]]
 name = "uuid"
-version = "1.23.0"
+version = "1.24.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "5ac8b6f42ead25368cf5b098aeb3dc8a1a2c05a3eee8a9a1a68c640edbfc79d9"
+checksum = "2cefc03fd367c0c6d4305de1b312cf00248c4114f4a0418ce6a6af769e3b0bd9"
 dependencies = [
  "getrandom 0.4.2",
  "js-sys",
@@ -4338,7 +4338,7 @@ version = "0.1.11"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "c2a7b1c03c876122aa43f3020e6c3c3ee5c05081c9a00739faf7503aeba10d22"
 dependencies = [
- "windows-sys 0.48.0",
+ "windows-sys 0.61.2",
 ]
 
 [[package]]
