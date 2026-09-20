@@ -3,8 +3,8 @@ use std::sync::Arc;
 
 use crunchyroll_rs::{
     Crunchyroll, Locale,
+    auth::{CrunchyrollBuilder, DeviceIdentifier},
     common::StreamExt,
-    crunchyroll::{CrunchyrollBuilder, DeviceIdentifier},
     media::{Rating, Series},
     search::{
         BrowseMediaType, BrowseOptions, BrowseSortType, SearchEpisode, SearchMediaCollection,
